@@ -6,8 +6,8 @@ pipeline {
         GIT_BRANCH = 'master'
         MAVEN_HOME = 'C:\\Users\\Sammy\\Downloads\\apache-maven-3.9.8'
         SONARQUBE_URL = 'http://localhost:9000'
-        NEXUS_URL = 'http://localhost:8081/repository/maven-releases/'
-        NEXUS_REPO_ID = 'releases'
+        NEXUS_URL = 'http://localhost:8081/repository/maven-snapshots/'
+        NEXUS_REPO_ID = 'nexus'
         NEXUS_CREDENTIALS_ID = 'sammy'
         TOMCAT_WEBAPPS_DIR = 'C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps'
     }
