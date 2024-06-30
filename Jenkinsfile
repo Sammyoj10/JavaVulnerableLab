@@ -1,1 +1,60 @@
+pipeline {
+    agent any
 
+    environment {
+        GIT_URL = 'https://github.com/Sammyoj10/JavaVulnerableLab.git'
+        GIT_BRANCH = 'master'
+        MAVEN_HOME = 'C:\Users\Sammy\Downloads\apache-maven-3.9.8'
+        SONARQUBE_URL = 'http://localhost:9000'
+        SONARQUBE_LOGIN = 'sammy'
+        SONARQUBE_PASSWORD = 'admin124810'
+        NEXUS_URL = 'http://localhost8081/repository/maven-releases/'
+        NEXUS_REPO_ID = 'releases'
+        NEXUS_CREDENTIALS_ID = 'sammy'
+        TOMCAT_WEBAPPS_DIR = 'C:\Program Files\Apache Software Foundation\Tomcat 10.1/webapps'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: "${env.GIT_BRANCH}", url: "${env.GIT_URL}"
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh "${env.MAVEN_HOME}/bin/mvn clean package"
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh "${env.MAVEN_HOME}/bin/mvn sonar:sonar -Dsonar.login=${env.SONARQUBE_LOGIN} -Dsonar.password=${env.SONARQUBE_PASSWORD}"
+                }
+            }
+        }
+
+        stage('Deploy to Nexus') {
+            steps {
+                sh "${env.MAVEN_HOME}/bin/mvn deploy -DaltDeploymentRepository=${env.NEXUS_REPO_ID}::default::${env.NEXUS_URL} -Dnexus.username=${env.NEXUS_CREDENTIALS_ID}"
+            }
+        }
+
+        stage('Copy WAR to Tomcat') {
+            steps {
+                script {
+                    def warFile = sh(script: "ls target/*.war", returnStdout: true).trim()
+                    sh "cp ${warFile} ${env.TOMCAT_WEBAPPS_DIR}/"
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up...'
+            cleanWs()
+        }
+    }
+}
