@@ -6,8 +6,6 @@ pipeline {
         GIT_BRANCH = 'master'
         MAVEN_HOME = 'C:\\Users\\Sammy\\Downloads\\apache-maven-3.9.8'
         SONARQUBE_URL = 'http://localhost:9000'
-        SONARQUBE_LOGIN = 'sammy'
-        SONARQUBE_PASSWORD = 'admin124810'
         NEXUS_URL = 'http://localhost:8081/repository/maven-releases/'
         NEXUS_REPO_ID = 'releases'
         NEXUS_CREDENTIALS_ID = 'sammy'
@@ -29,8 +27,8 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    bat "\"${env.MAVEN_HOME}\\bin\\mvn\" sonar:sonar -Dsonar.login=${env.SONARQUBE_LOGIN} -Dsonar.password=${env.SONARQUBE_PASSWORD}"
+                withCredentials([usernamePassword(credentialsId: 'sonarqube-creds', usernameVariable: 'SONARQUBE_LOGIN', passwordVariable: 'SONARQUBE_PASSWORD')]) {
+                    bat "\"${env.MAVEN_HOME}\\bin\\mvn\" sonar:sonar -Dsonar.login=%SONARQUBE_LOGIN% -Dsonar.password=%SONARQUBE_PASSWORD% -Dsonar.host.url=${env.SONARQUBE_URL}"
                 }
             }
         }
