@@ -27,7 +27,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'SonarCredentials', usernameVariable: 'SONARQUBE_LOGIN', passwordVariable: 'SONARQUBE_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'sonar', usernameVariable: 'SONARQUBE_LOGIN', passwordVariable: 'SONARQUBE_PASSWORD')]) {
                     bat "\"${env.MAVEN_HOME}\\bin\\mvn\" sonar:sonar -Dsonar.login=%SONARQUBE_LOGIN% -Dsonar.password=%SONARQUBE_PASSWORD% -Dsonar.host.url=${env.SONARQUBE_URL}"
                 }
             }
