@@ -5,7 +5,7 @@ pipeline {
         GIT_URL = 'https://github.com/Sammyoj10/JavaVulnerableLab.git'
         GIT_BRANCH = 'master'
         MAVEN_HOME = 'C:\\Users\\Sammy\\Downloads\\apache-maven-3.9.8'
-        SONARQUBE_URL = 'http://localhost:9000'
+        SONARCLOUD_URL = 'https://sonarcloud.io'
         NEXUS_URL = 'http://localhost:8081/repository/maven-releases/'
         NEXUS_REPO_ID = 'releases'
         NEXUS_CREDENTIALS_ID = 'sammy'
@@ -25,10 +25,10 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('SonarCloud Analysis') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'sonar', usernameVariable: 'SONARQUBE_LOGIN', passwordVariable: 'SONARQUBE_PASSWORD')]) {
-                    bat "\"${env.MAVEN_HOME}\\bin\\mvn\" sonar:sonar -Dsonar.login=%SONARQUBE_LOGIN% -Dsonar.password=%SONARQUBE_PASSWORD% -Dsonar.host.url=${env.SONARQUBE_URL}"
+                withCredentials([string(credentialsId: 'sonar', variable: 'SONARCLOUD_TOKEN')]) {
+                    bat "\"${env.MAVEN_HOME}\\bin\\mvn\" sonar:sonar -Dsonar.login=%SONARCLOUD_TOKEN% -Dsonar.host.url=${env.SONARCLOUD_URL}"
                 }
             }
         }
