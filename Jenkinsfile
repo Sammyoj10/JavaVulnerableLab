@@ -12,6 +12,10 @@ pipeline {
         TOMCAT_WEBAPPS_DIR = 'C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps'
     }
 
+    tools {
+        jdk 'JDK17'  // Use the JDK installation configured in Jenkins
+    }
+
     stages {
         stage('Checkout') {
             steps {
