@@ -6,8 +6,8 @@ pipeline {
         GIT_BRANCH = 'master'
         MAVEN_HOME = 'C:\\Users\\Sammy\\Downloads\\apache-maven-3.9.8'
         SONARQUBE_URL = 'http://localhost:9000'
-        NEXUS_URL = 'http://localhost:8081/repository/maven-releases/'
-        NEXUS_REPO_ID = 'releases'
+        NEXUS_URL = 'http://localhost:8081/repository/maven-snapshots/'
+        NEXUS_REPO_ID = 'nexus'
         TOMCAT_WEBAPPS_DIR = 'C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps'
     }
 
@@ -38,7 +38,7 @@ pipeline {
 
         stage('Deploy to Nexus') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'sammy', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
                     bat "\"${env.MAVEN_HOME}\\bin\\mvn\" deploy -DaltDeploymentRepository=${env.NEXUS_REPO_ID}::default::${env.NEXUS_URL} -Dnexus.username=%NEXUS_USERNAME% -Dnexus.password=%NEXUS_PASSWORD%"
                 }
             }
