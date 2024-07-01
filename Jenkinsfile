@@ -50,6 +50,7 @@ pipeline {
                 bat "copy target\\JavaVulnerableLab.war \"${env.TOMCAT_WEB}\\JavaVulnerableLab.war\""
             }
         }
+    }
 
     post {
         always {
