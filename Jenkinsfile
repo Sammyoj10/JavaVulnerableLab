@@ -46,8 +46,8 @@ pipeline {
         stage('Copy WAR to Tomcat') {
             steps {
                 script {
-                    def warFile = bat(script: "for %i in (target\\*.war) do @echo %i", returnStdout: true).trim()
-                    bat "copy ${warFile} \"${env.TOMCAT_WEBAPPS_DIR}\""
+                    def warFile = findFiles(glob: 'target/*.war')[0]
+                    bat "copy \"${warFile.path}\" \"${env.TOMCAT_WEBAPPS_DIR}\""
                 }
             }
         }
