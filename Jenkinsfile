@@ -9,7 +9,8 @@ pipeline {
         NEXUS_URL = 'http://localhost:8081/repository/maven-snapshots/'
         NEXUS_REPO_ID = 'nexus'
         NEXUS_CREDENTIALS_ID = 'sammy'
-        TOMCAT_WEBAPPS_DIR = 'C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps'
+        TOMCAT_WEB = "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps"
+        TOMCAT_BIN = "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\bin"
     }
 
     tools {
@@ -45,19 +46,10 @@ pipeline {
 
         stage('Copy WAR to Tomcat') {
             steps {
-                script {
-                    def warFiles = bat(script: "dir /B target\\*.war", returnStdout: true).trim().tokenize()
-                    if (warFiles.size() == 1) {
-                        def warFile = warFiles[0]
-                        bat "copy target\\${warFile} \"${env.TOMCAT_WEBAPPS_DIR}\""
-                    } else {
-                        error "WAR file not found or multiple WAR files found: ${warFiles}"
-                    }
-                }
+                // Deploying the WAR file to Tomcat
+                bat "copy target\\JavaVulnerableLab.war \"${env.TOMCAT_WEB}\\JavaVulnerableLab.war\""
             }
         }
-    }
-
 
     post {
         always {
